@@ -39,7 +39,7 @@ initialGame = Game [ [ Just (Lance Plain White),Just (Knight Plain White), Just 
                    , [ Nothing, Just (Bishop Plain Black), Nothing, Nothing, Nothing, Nothing, Nothing, Just (Rook Plain Black), Nothing]
                    , [ Just (Lance Plain Black),Just (Knight Plain Black), Just (Silver Plain Black),Just (Gold Black), Just (King Black)
                      , Just (Gold Black), Just (Silver Plain Black),Just (Knight Plain Black),Just (Lance Plain Black)]
-                   ] Black []
+                   ] Black [] Nothing
 
 sample1Test :: Assertion
 sample1Test = parseString sfen mempty sample1SFEN ^? _Success @?= Just sample1Game
@@ -57,4 +57,4 @@ sample1Game = Game [ [Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Noth
                    , [Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing]
                    , [Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing]
                    , [Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing]
-                   ] Black [Silver Plain Black, Silver Plain Black]
+                   ] Black [Silver Plain Black, Silver Plain Black] Nothing

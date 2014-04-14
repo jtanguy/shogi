@@ -9,7 +9,7 @@ import Shogi.Game
 
 -- * Parsing
 sfen :: Parser Game
-sfen = Game <$> (boardParser <* char ' ') <*> (color <* char ' ') <*> hand <* eof
+sfen = Game <$> (boardParser <* char ' ') <*> (color <* char ' ') <*> hand <*> optional (char ' ' *> natural) <* eof
 
 color :: Parser Color
 color = ((char 'B' *> pure Black)
@@ -31,7 +31,7 @@ boardLine = fmap concat $ many ( ((:[]). Just <$> piece) <|> emptySq )
     emptySq = (flip replicate Nothing) <$> num
 
 num :: Parser Int
-num = fmap (f) $ oneOf "123456789"
+num = fmap f $ oneOf "123456789"
   where
     f '1' = 1
     f '2' = 2
@@ -71,7 +71,7 @@ lance = Lance <$> promoted <*> (fmap colored $ oneOf "lL")
 pawn :: Parser Piece
 pawn = Pawn <$> promoted <*> (fmap colored $ oneOf "pP")
 
--- * Utility
+-- ** Utility
 colored :: Char -> Color
 colored c | isUpper c = Black
           | otherwise = White

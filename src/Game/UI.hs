@@ -1,12 +1,11 @@
 {-#LANGUAGE OverloadedStrings #-}
 module Game.UI where
 
-import Control.Applicative
 import Control.Lens
 import Control.Monad
 import Control.Monad.Trans.Class
 import Control.Monad.Trans.RWS
-import qualified Data.Text as T
+import Data.Text()
 import UI.NCurses
 
 import Shogi.Board
@@ -48,6 +47,11 @@ drawGame g = do
     moveCursor 20 0
     drawText "Current player: "
     drawString (g^.player.to show)
+    maybe (return ()) (\n -> do
+        drawText " (Move n°"
+        drawString (show n)
+        drawText ")"
+        ) (g^.moveNum)
 
 updateBoard :: Board -> Update ()
 updateBoard b = forM_ [0..8] $ \i -> (forM_ [0..8] $ \j -> do
@@ -59,7 +63,6 @@ update :: RWST Window [Move] UIState Curses ()
 update = do
     w <- ask
     g <- gets (view (game))
-    cur <- gets (view (game.player))
     (ci,cj) <- gets (view current)
     lift $ updateWindow w (drawGame g >> moveCursor (2*ci+2) (3*cj+2))
     lift $ render

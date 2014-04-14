@@ -2,11 +2,12 @@
 module Shogi.Game where
 
 import Control.Lens
-import Shogi.Board (Board(..),Color(..),Piece(..))
+import Shogi.Board (Board,Color(..),Piece(..))
 
 data Game = Game { _board :: Board
                  , _player :: Color
                  , _captured :: [Piece]
+                 , _moveNum :: Maybe Integer
                  } deriving (Show, Eq)
 $(makeLenses ''Game)
 
