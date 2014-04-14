@@ -1,5 +1,6 @@
 {
     "shogi.cabal": { "command": "cabal" },
     "src/*.hs": {"template": ["module {capitalize|dot} where"]},
+    "lib/*.hs": {"template": ["module {capitalize|dot} where"]},
     "*": {"make": "cabal build"}
 }

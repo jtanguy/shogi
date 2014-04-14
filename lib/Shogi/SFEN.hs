@@ -2,21 +2,18 @@ module Shogi.SFEN where
 
 import Control.Applicative
 import Data.Char
-import Data.Monoid
-import Data.List
-import qualified Data.Text as T
 import Text.Trifecta
 
 import Shogi.Board
 import Shogi.Game
 
+-- * Parsing
 sfen :: Parser Game
-sfen = Game <$> boardParser <*> color <*> hand <* eof
-
+sfen = Game <$> (boardParser <* char ' ') <*> (color <* char ' ') <*> hand <* eof
 
 color :: Parser Color
 color = ((char 'B' *> pure Black)
-      <|> (char 'W' *> pure White)) <* char ' '
+      <|> (char 'W' *> pure White))
 
 hand :: Parser [Piece]
 hand = (char '-' *> pure [])
@@ -26,7 +23,7 @@ pieces :: Parser [Piece]
 pieces = replicate <$> (option 1 (num)) <*> piece
 
 boardParser :: Parser Board
-boardParser = (sepBy boardLine (char '/'))  <* char ' '
+boardParser = (sepBy boardLine (char '/'))
 
 boardLine :: Parser [Square]
 boardLine = fmap concat $ many ( ((:[]). Just <$> piece) <|> emptySq )
@@ -44,7 +41,7 @@ num = fmap (f) $ oneOf "123456789"
     f '6' = 6
     f '7' = 7
     f '8' = 8
-    f '9' = 9
+    f _ = 9
 
 
 piece :: Parser Piece
