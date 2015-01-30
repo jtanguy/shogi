@@ -1,7 +1,7 @@
 {
     "shogi.cabal": { "command": "cabal" },
-    "src/*.hs": {"template": ["module {capitalize|dot} where"]},
-    "lib/*.hs": {"template": ["module {capitalize|dot} where"]},
-    "test/*/Tests.hs": { "template": ["module {capitalize|dot}.Tests where"]},
+    "src/*.hs": { "command": "src", "template": ["module {capitalize|dot} where"]},
+    "lib/*.hs": {"command": "lib", "template": ["module {capitalize|dot} where"]},
+    "test/*/Tests.hs": { "command":"test", "template": ["module {capitalize|dot}.Tests where"]},
     "*": {"make": "cabal build"}
 }
