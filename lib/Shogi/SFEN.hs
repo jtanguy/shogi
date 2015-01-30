@@ -12,23 +12,23 @@ sfen :: Parser Game
 sfen = Game <$> (boardParser <* char ' ') <*> (color <* char ' ') <*> hand <*> optional (char ' ' *> natural) <* eof
 
 color :: Parser Color
-color = ((char 'B' *> pure Black)
-      <|> (char 'W' *> pure White))
+color = (char 'B' *> pure Black)
+    <|> (char 'W' *> pure White)
 
 hand :: Parser [Piece]
 hand = (char '-' *> pure [])
-     <|> (fmap concat (many pieces))
+    <|> fmap concat (many pieces)
 
 pieces :: Parser [Piece]
-pieces = replicate <$> (option 1 (num)) <*> piece
+pieces = replicate <$> option 1 num <*> piece
 
 boardParser :: Parser Board
-boardParser = (sepBy boardLine (char '/'))
+boardParser = sepBy boardLine (char '/')
 
 boardLine :: Parser [Square]
 boardLine = fmap concat $ many ( ((:[]). Just <$> piece) <|> emptySq )
   where
-    emptySq = (flip replicate Nothing) <$> num
+    emptySq = flip replicate Nothing <$> num
 
 num :: Parser Int
 num = fmap f $ oneOf "123456789"
@@ -54,22 +54,22 @@ gold :: Parser Piece
 gold = Gold . colored <$> oneOf "gG"
 
 rook :: Parser Piece
-rook = Rook <$> promoted <*> (fmap colored $ oneOf "rR")
+rook = Rook <$> promoted <*> fmap colored (oneOf "rR")
 
 bishop :: Parser Piece
-bishop = Bishop <$> promoted <*> (fmap colored $ oneOf "bB")
+bishop = Bishop <$> promoted <*> fmap colored (oneOf "bB")
 
 silver :: Parser Piece
-silver = Silver <$> promoted <*> (fmap colored $ oneOf "sS")
+silver = Silver <$> promoted <*> fmap colored (oneOf "sS")
 
 knight :: Parser Piece
-knight = Knight <$> promoted <*> (fmap colored $ oneOf "nN")
+knight = Knight <$> promoted <*> fmap colored (oneOf "nN")
 
 lance :: Parser Piece
-lance = Lance <$> promoted <*> (fmap colored $ oneOf "lL")
+lance = Lance <$> promoted <*> fmap colored (oneOf "lL")
 
 pawn :: Parser Piece
-pawn = Pawn <$> promoted <*> (fmap colored $ oneOf "pP")
+pawn = Pawn <$> promoted <*> fmap colored (oneOf "pP")
 
 -- ** Utility
 colored :: Char -> Color

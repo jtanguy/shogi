@@ -1,5 +1,5 @@
 {-#LANGUAGE OverloadedStrings #-}
-module Game.UI where
+module UI where
 
 import Control.Lens
 import Control.Monad
@@ -10,7 +10,6 @@ import UI.NCurses
 
 import Shogi.Board
 import Shogi.Game
-import Game.Util
 
 data UIState = UIState { _game :: Game, _current :: (Integer,Integer)}
 
@@ -56,16 +55,16 @@ drawGame g = do
 updateBoard :: Board -> Update ()
 updateBoard b = forM_ [0..8] $ \i -> (forM_ [0..8] $ \j -> do
     moveCursor (2*i+2) (3*j+1)
-    drawText (showSq ((b!!(fromInteger i))!!(fromInteger j)))
+    drawText (showSq (b !! fromInteger i !! fromInteger j))
     )
 
 update :: RWST Window [Move] UIState Curses ()
 update = do
     w <- ask
-    g <- gets (view (game))
+    g <- gets (view game)
     (ci,cj) <- gets (view current)
     lift $ updateWindow w (drawGame g >> moveCursor (2*ci+2) (3*cj+2))
-    lift $ render
+    lift render
 
 mainLoop :: RWST Window [Move] UIState Curses ()
 mainLoop = loop where
@@ -80,10 +79,10 @@ mainLoop = loop where
                 ' ' -> modify (game.player %~ togglePlayer) >> loop
                 _ -> loop
             Just (EventSpecialKey k) -> case k of
-                KeyUpArrow	    -> modify (current %~ (mapFst $ inBounds . subtract 1)) >> loop
-                KeyDownArrow    -> modify (current %~ (mapFst $ inBounds . (1+))) >> loop
-                KeyLeftArrow	-> modify (current %~ (mapSnd $ inBounds . subtract 1)) >> loop
-                KeyRightArrow   -> modify (current %~ (mapSnd $ inBounds . (1+))) >> loop
+                KeyUpArrow	    -> modify (current . _1 %~ (inBounds . subtract 1)) >> loop
+                KeyDownArrow    -> modify (current . _1 %~ (inBounds . (1+))) >> loop
+                KeyLeftArrow	-> modify (current . _2 %~ (inBounds . subtract 1)) >> loop
+                KeyRightArrow   -> modify (current . _2 %~ (inBounds . (1+))) >> loop
                 _ -> loop
             _ -> loop
     inBounds = (`mod` 9) . (9+)
